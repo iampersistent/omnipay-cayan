@@ -8,8 +8,15 @@ class RefundRequest extends AbstractRequest
     {
         $this->validate('amount', 'transactionReference');
 
-        $transactionReference = simplexml_load_string($this->getTransactionReference());
-        $transactionReceipt = $transactionReference->receipt;
+        $soap = simplexml_load_string($this->getTransactionReference());
+        $body = $soap->children('http://www.w3.org/2003/05/soap-envelope')->Body->children();
+        if(isset($body->SaleResponse) && !empty($body->SaleResponse)){
+            $Token = (string) $body->SaleResponse->SaleResult->Token;
+        }else  if(isset($body->CaptureResponse) && !empty($body->CaptureResponse)){
+            $Token = (string) $body->CaptureResponse->CaptureResult->Token;
+        }else{
+            $Token = NULL;
+        }
 
         $request = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?>
             <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"></soap:Envelope>');
@@ -21,10 +28,6 @@ class RefundRequest extends AbstractRequest
         $res_add_cc3->addChild('MerchantSiteId',$this->getMerchantSiteId());
         $res_add_cc3->addChild('MerchantKey',$this->getMerchantKey());
 
-
-        $soap = simplexml_load_string($this->getTransactionReference());
-        $body = $soap->children('http://www.w3.org/2003/05/soap-envelope')->Body->children();
-        $Token = (string) $body->SaleResponse->SaleResult->Token;
         $res_add_cc4 = $res_add_cc2->addChild('PaymentData','');
         $res_add_cc4->addChild('Source','PreviousTransaction');
         $res_add_cc4->addChild('Token',$Token);

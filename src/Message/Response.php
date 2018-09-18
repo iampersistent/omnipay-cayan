@@ -41,14 +41,26 @@ class Response extends AbstractResponse
             isset($this->body->SaleResponse->SaleResult->ApprovalStatus) &&
             !empty($this->body->SaleResponse->SaleResult->ApprovalStatus) &&
             $this->body->SaleResponse->SaleResult->ApprovalStatus == 'APPROVED'
-            )
-            { return true; }
+        )
+        { return true; }
         else if(
             isset($this->body->RefundResponse->RefundResult->ApprovalStatus) &&
             !empty($this->body->RefundResponse->RefundResult->ApprovalStatus) &&
             $this->body->RefundResponse->RefundResult->ApprovalStatus == 'APPROVED'
-            )
-            { return true; }
+        )
+        { return true; }
+        else if(
+            isset($this->body->AuthorizeResponse->AuthorizeResult->ApprovalStatus) &&
+            !empty($this->body->AuthorizeResponse->AuthorizeResult->ApprovalStatus) &&
+            $this->body->AuthorizeResponse->AuthorizeResult->ApprovalStatus == 'APPROVED'
+        )
+        { return true; }
+        else if(
+            isset($this->body->CaptureResponse->CaptureResult->ApprovalStatus) &&
+            !empty($this->body->CaptureResponse->CaptureResult->ApprovalStatus) &&
+            $this->body->CaptureResponse->CaptureResult->ApprovalStatus == 'APPROVED'
+        )
+        { return true; }
 
         return false;
     }
